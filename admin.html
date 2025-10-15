@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panneau d'administration</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Administration</h1>
@@ -13,12 +13,31 @@
     <div id="users-list"></div>
 
     <script>
-        // Vérifie si l'utilisateur est admin
         if (!localStorage.getItem('token')) {
             window.location.href = '/login.html';
         }
 
-        fetch('/api/user', {
+        fetch('/api/admin', {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.users) {
+                const userListDiv = document.getElementById('users-list');
+                data.users.forEach(user => {
+                    userListDiv.innerHTML += `<p>${user.email} - ${user.role}</p>`;
+                });
+            }
+        })
+        .catch(error => console.error('Erreur:', error));
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/login.html';
+        }
+    </script>
+</body>
+</html>

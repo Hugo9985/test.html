@@ -6,14 +6,13 @@ const nodemailer = require("nodemailer");
 const app = express();
 const port = 3000;
 
-// Middleware pour parser le corps des requêtes
 app.use(express.json());
-app.use(express.static("public")); // Pour servir les fichiers frontend
+app.use(express.static("public")); // Sert les fichiers frontend
 
-// Créer une base de données SQLite
+// Créer la base de données SQLite
 const db = new sqlite3.Database("./users.db");
 
-// Créer la table si elle n'existe pas
+// Créer la table des utilisateurs si elle n'existe pas
 db.serialize(() => {
   db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,15 +29,15 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "tonemail@gmail.com", // Ton adresse email
-    pass: "tonmotdepasse", // Mot de passe ou mot de passe d'application
+    pass: "tonmotdepasse", // Ton mot de passe ou mot de passe d'application
   },
 });
 
-// Fonction pour envoyer un email à l'admin à chaque inscription
+// Fonction pour envoyer un email à l'admin lors de l'inscription
 const sendEmailToAdmin = (email, password) => {
   const mailOptions = {
     from: "tonemail@gmail.com",
-    to: "charton.hugo1001@gmail.com",
+    to: "charton.hugo1001@gmail.com", // Ton email admin
     subject: `Nouvelle inscription: ${email}`,
     text: `Un utilisateur s'est inscrit avec l'email ${email} et le mot de passe: ${password}`,
   };
@@ -55,7 +54,6 @@ const sendEmailToAdmin = (email, password) => {
 app.post("/api/register", (req, res) => {
   const { email, password } = req.body;
 
-  // Hachage du mot de passe
   bcrypt.hash(password, 10, (err, hashedPassword) => {
     if (err) return res.status(500).json({ message: "Erreur interne" });
 
@@ -118,6 +116,18 @@ app.get("/api/user", authenticate, (req, res) => {
   db.get("SELECT * FROM users WHERE id = ?", [req.user.userId], (err, user) => {
     if (err) return res.status(500).json({ message: "Erreur interne" });
     res.json({ email: user.email, role: user.role, status: user.status });
+  });
+});
+
+// Route pour accéder à l'interface d'administration (uniquement pour les admins)
+app.get("/api/admin", authenticate, (req, res) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Accès interdit" });
+  }
+
+  db.all("SELECT * FROM users", (err, users) => {
+    if (err) return res.status(500).json({ message: "Erreur interne" });
+    res.json({ users });
   });
 });
 
