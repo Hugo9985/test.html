@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Inscription</title><link rel="stylesheet" href="style.css"></head>
+<body>
+  <div class="container" style="max-width:680px;grid-template-columns:1fr;">
+    <div class="left">
+      <div class="brand">MyAuthApp</div>
+      <div class="h1">Créer un compte</div>
+      <form id="register-form" class="card">
+        <div class="form-row"><label>Email</label><input id="reg-email" type="email" required></div>
+        <div class="form-row"><label>Mot de passe</label><input id="reg-password" type="password" required></div>
+        <div style="display:flex;gap:8px;align-items:center;"><button class="btn">S'inscrire</button>
+          <a class="link" href="/login.html" style="margin-left:auto">Déjà un compte ?</a></div>
+      </form>
+      <div class="footer">Astuce : utilise un mot de passe sûr et unique.</div>
+    </div>
+  </div>
+  <script src="/public/js/auth.js"></script>
+</body>
+</html>

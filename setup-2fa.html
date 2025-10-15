@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Configurer 2FA</title><link rel="stylesheet" href="style.css"></head>
+<body>
+  <div class="container" style="max-width:880px;grid-template-columns:1fr;">
+    <div class="left">
+      <div class="brand">MyAuthApp</div>
+      <div class="h1">Configurer l'authentification à deux facteurs</div>
+      <div id="setup-step1" class="card">
+        <p class="small">Cliquez pour générer le QR code, puis scannez-le avec votre application TOTP (Google Authenticator, Authy...)</p>
+        <button id="start-2fa" class="btn">Générer QR</button>
+      </div>
+
+      <div id="setup-step2" class="card" style="display:none; text-align:center;">
+        <p class="small">Scanne le QR avec ton appli, puis entre le code généré pour vérifier.</p>
+        <img id="qr-img" class="qr" src="" alt="QR Code">
+        <p class="small">Clé (au cas où) : <code id="qr-secret"></code></p>
+        <form id="setup-form" style="margin-top:8px;">
+          <div class="form-row"><label>Code TOTP</label><input id="setup-token" type="text" pattern="\\d{6}" required></div>
+          <button class="btn">Activer 2FA</button>
+        </form>
+      </div>
+
+      <div class="footer">Après activation, tu devras fournir le code TOTP à chaque connexion.</div>
+    </div>
+  </div>
+  <script src="/public/js/auth.js"></script>
+</body>
+</html>

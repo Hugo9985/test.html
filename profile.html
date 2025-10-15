@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Profil</title><link rel="stylesheet" href="style.css"></head>
+<body>
+  <div class="container" style="grid-template-columns:1fr;max-width:720px;">
+    <div class="left card" id="profile-page">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="flex:1">
+          <div class="brand">MyAuthApp</div>
+          <h2 style="margin:6px 0">Mon profil</h2>
+        </div>
+        <div><button id="logout" class="btn">Déconnexion</button></div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <p><strong>Email:</strong> <span id="profile-email">—</span></p>
+        <p><strong>Inscrit le:</strong> <span id="profile-created">—</span></p>
+        <p><strong>2FA:</strong> <span id="profile-2fa">—</span></p>
+      </div>
+
+      <div style="margin-top:18px;">
+        <div id="setup-section" style="display:block;">
+          <p class="small">Activer l'authentification à deux facteurs :</p>
+          <button id="start-2fa" class="btn">Configurer 2FA</button>
+          <a class="link" href="/setup-2fa.html" style="margin-left:12px">Ou page de configuration</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script src="/public/js/auth.js"></script>
+</body>
+</html>

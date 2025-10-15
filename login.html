@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Connexion</title><link rel="stylesheet" href="style.css"></head>
+<body>
+  <div class="container" style="max-width:680px;grid-template-columns:1fr;">
+    <div class="left">
+      <div class="brand">MyAuthApp</div>
+      <div class="h1">Se connecter</div>
+      <form id="login-form" class="card">
+        <div class="form-row"><label>Email</label><input id="login-email" type="email" required></div>
+        <div class="form-row"><label>Mot de passe</label><input id="login-password" type="password" required></div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn">Connexion</button>
+          <a class="link" href="/register.html" style="margin-left:auto">S'inscrire</a>
+        </div>
+      </form>
+
+      <form id="login-2fa-form" class="card" style="display:none;margin-top:12px;">
+        <div class="form-row"><label>Code 2FA</label><input id="login-2fa-token" type="text" pattern="\\d{6}" required></div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn">Valider 2FA</button>
+        </div>
+      </form>
+
+      <div class="footer">Utilise une appli d'authentification (Google Authenticator, Authy, etc.)</div>
+    </div>
+  </div>
+  <script src="/public/js/auth.js"></script>
+</body>
+</html>
