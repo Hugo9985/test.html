@@ -1,41 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-  <title>Connexion</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-  <h1>Connexion</h1>
-  <form id="login-form">
-    <input type="email" id="email" placeholder="Email" required><br>
-    <input type="password" id="password" placeholder="Mot de passe" required><br>
-    <button type="submit">Se connecter</button>
-  </form>
-  <p id="login-status"></p>
+    <h1>Connexion</h1>
+    <form id="login-form">
+        <input type="email" id="email" placeholder="Email" required><br>
+        <input type="password" id="password" placeholder="Mot de passe" required><br>
+        <button type="submit">Se connecter</button>
+    </form>
+    <p id="login-status"></p>
 
-  <script>
-    document.getElementById('login-form').addEventListener('submit', async function(event) {
-      event.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      const statusElement = document.getElementById('login-status');
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            const statusElement = document.getElementById('login-status');
 
-      if (data.success) {
-        statusElement.textContent = 'Connexion réussie !';
-        statusElement.style.color = 'green';
-        setTimeout(() => window.location.href = '/profile.html', 2000);
-      } else {
-        statusElement.textContent = data.message;
-        statusElement.style.color = 'red';
-      }
-    });
-  </script>
+            if (data.success) {
+                localStorage.setItem('token', data.token); // Sauvegarde du token
+                statusElement.textContent = 'Connexion réussie !';
+                statusElement.style.color = 'green';
+                setTimeout(() => window.location.href = '/home.html', 2000); // Redirige vers la page d'accueil
+            } else {
+                statusElement.textContent = data.message;
+                statusElement.style.color = 'red';
+            }
+        });
+    </script>
 </body>
 </html>

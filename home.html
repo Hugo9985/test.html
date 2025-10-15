@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page d'accueil</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <h1>Bienvenue sur votre page d'accueil</h1>
+    <button onclick="logout()">Se déconnecter</button>
+
+    <script>
+        // Vérifie si l'utilisateur est connecté
+        if (!localStorage.getItem('token')) {
+            window.location.href = '/login.html';
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/login.html';
+        }
+    </script>
+</body>
+</html>
