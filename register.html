@@ -1,20 +1,41 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"><title>Inscription</title><link rel="stylesheet" href="style.css"></head>
+<head>
+  <title>Inscription</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
 <body>
-  <div class="container" style="max-width:680px;grid-template-columns:1fr;">
-    <div class="left">
-      <div class="brand">MyAuthApp</div>
-      <div class="h1">Créer un compte</div>
-      <form id="register-form" class="card">
-        <div class="form-row"><label>Email</label><input id="reg-email" type="email" required></div>
-        <div class="form-row"><label>Mot de passe</label><input id="reg-password" type="password" required></div>
-        <div style="display:flex;gap:8px;align-items:center;"><button class="btn">S'inscrire</button>
-          <a class="link" href="/login.html" style="margin-left:auto">Déjà un compte ?</a></div>
-      </form>
-      <div class="footer">Astuce : utilise un mot de passe sûr et unique.</div>
-    </div>
-  </div>
-  <script src="/public/js/auth.js"></script>
+  <h1>Inscription</h1>
+  <form id="register-form">
+    <input type="email" id="email" placeholder="Email" required><br>
+    <input type="password" id="password" placeholder="Mot de passe" required><br>
+    <button type="submit">S'inscrire</button>
+  </form>
+  <p id="register-status"></p>
+
+  <script>
+    document.getElementById('register-form').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      const statusElement = document.getElementById('register-status');
+
+      if (data.success) {
+        statusElement.textContent = 'Inscription réussie !';
+        statusElement.style.color = 'green';
+        setTimeout(() => window.location.href = '/login.html', 2000);
+      } else {
+        statusElement.textContent = data.message;
+        statusElement.style.color = 'red';
+      }
+    });
+  </script>
 </body>
 </html>

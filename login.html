@@ -1,30 +1,41 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"><title>Connexion</title><link rel="stylesheet" href="style.css"></head>
+<head>
+  <title>Connexion</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
 <body>
-  <div class="container" style="max-width:680px;grid-template-columns:1fr;">
-    <div class="left">
-      <div class="brand">MyAuthApp</div>
-      <div class="h1">Se connecter</div>
-      <form id="login-form" class="card">
-        <div class="form-row"><label>Email</label><input id="login-email" type="email" required></div>
-        <div class="form-row"><label>Mot de passe</label><input id="login-password" type="password" required></div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <button class="btn">Connexion</button>
-          <a class="link" href="/register.html" style="margin-left:auto">S'inscrire</a>
-        </div>
-      </form>
+  <h1>Connexion</h1>
+  <form id="login-form">
+    <input type="email" id="email" placeholder="Email" required><br>
+    <input type="password" id="password" placeholder="Mot de passe" required><br>
+    <button type="submit">Se connecter</button>
+  </form>
+  <p id="login-status"></p>
 
-      <form id="login-2fa-form" class="card" style="display:none;margin-top:12px;">
-        <div class="form-row"><label>Code 2FA</label><input id="login-2fa-token" type="text" pattern="\\d{6}" required></div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <button class="btn">Valider 2FA</button>
-        </div>
-      </form>
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
-      <div class="footer">Utilise une appli d'authentification (Google Authenticator, Authy, etc.)</div>
-    </div>
-  </div>
-  <script src="/public/js/auth.js"></script>
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      const statusElement = document.getElementById('login-status');
+
+      if (data.success) {
+        statusElement.textContent = 'Connexion réussie !';
+        statusElement.style.color = 'green';
+        setTimeout(() => window.location.href = '/profile.html', 2000);
+      } else {
+        statusElement.textContent = data.message;
+        statusElement.style.color = 'red';
+      }
+    });
+  </script>
 </body>
 </html>
